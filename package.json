@@ -1,0 +1,19 @@
+{
+  "name": "myyukabootstrapjquery",
+  "version": "1.0.0",
+  "description": "MyYuka créé avec Boostrap et Jquery",
+  "main": "index.html",
+  "scripts": {
+    "div": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DamienGruffeille/MyYuka.git"
+  },
+  "author": "Damien Gruffeille",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^5.2.1",
+    "hint": "^7.1.2"
+  }
+}
