@@ -13,13 +13,14 @@ $("#btnRechercher").click(appelApi);
 
 /* Connexion à l'API OpenFoodFact*/
 function appelApi() {
-  var codeBarre = $("#codeBarre").val();
+  let codeBarre = $("#codeBarre").val();
   const fullUrl = url + codeBarre;
 
   $.ajax(fullUrl, {
     success: function (value) {
       printResults(value);
       addTableauNutritionnel(value.product.nutrient_levels);
+      showPhotoVerdict(value);
     },
   });
 }
@@ -55,4 +56,74 @@ function traduireNiveauNutritionnel(termeATraduire) {
     default:
       return "<span id='undefined'>Non défini</span>";
   }
+}
+
+/* Affichage du verdict final */
+
+function calculScoreFinal(produit) {
+  let scoreFinal = 0;
+
+  switch (produit.product.nutriscore_grade) {
+    case "a":
+      scoreFinal = -2;
+      break;
+    case "b":
+      scoreFinal = -1;
+      break;
+    /* le case c n'est pas pris en compte car =0 */
+    case "d":
+      scoreFinal = 1;
+      break;
+    case "e":
+      scoreFinal = 2;
+      break;
+  }
+
+  switch (produit.product.nova_group) {
+    case 1:
+      scoreFinal -= 2;
+      break;
+    case 2:
+      scoreFinal -= 1;
+      break;
+    case 3:
+      scoreFinal += 1;
+      break;
+    case 4:
+      scoreFinal += 2;
+      break;
+  }
+
+  switch (produit.product.ecoscore_grade) {
+    case "a":
+      scoreFinal -= 2;
+      break;
+    case "b":
+      scoreFinal -= 1;
+      break;
+    /* le case c n'est pas pris en compte car =0 */
+    case "d":
+      scoreFinal += 1;
+      break;
+    case "e":
+      scoreFinal += 2;
+      break;
+  }
+
+  return scoreFinal;
+}
+
+function showPhotoVerdict(value) {
+  let scoreFinal = calculScoreFinal(value);
+  let chemin = "";
+
+  if (scoreFinal === 0) {
+    chemin = "img/neutre.jpg";
+  } else if (scoreFinal < 0) {
+    chemin = "img/OK.jpg";
+  } else {
+    chemin = "img/caca.jpg";
+  }
+
+  $("#photoVerdict").attr("src", chemin);
 }
